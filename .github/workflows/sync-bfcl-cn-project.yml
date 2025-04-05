@@ -32,7 +32,7 @@ jobs:
 
       - name: Extract berkeley-function-call-leaderboard folder history
         run: |
-          git filter-repo --path berkeley-function-call-leaderboard/ --to-subdirectory / --force
+          git filter-repo --path berkeley-function-call-leaderboard/ --path-rename 'berkeley-function-call-leaderboard/:' --force
 
       - name: Push to AIOpsPlus Repo BFCL-CN
         run: |
