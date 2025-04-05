@@ -26,17 +26,13 @@ jobs:
         run: |
           git filter-repo --path berkeley-function-call-leaderboard/ --force
 
-      # 步骤 4：配置 Git 用户名和邮箱（用于推送提交）
-      - name: Configure Git
-        run: |
-          git config --global user.email "actions@github.com"
-          git config --global user.name "GitHub Actions"
-
-      # 步骤 5：推送到组织仓库 B
+      # 步骤 4：推送到组织仓库 B
       - name: Push to AIOpsPlus Repo BFCL-CN
         env:
           # 从 Secrets 中读取访问令牌（需提前配置）
           PAT: ${{ secrets.ORG_PAT }}
         run: |
-          git remote add aiopsplus-repo https://github.com/aiopsplus/BFCL-CN.git
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git remote add aiopsplus-repo https://$PAT@github.com/aiopsplus/BFCL-CN.git
           git push aiopsplus-repo main --force
