@@ -1,0 +1,42 @@
+name: Sync berkeley-function-call-leaderboard Folder to AIOpsPlus Repo BFCL-CN
+
+on:
+  push:
+    branches: [main]     # 监听 main 分支的推送
+    paths:               # 仅当 berkeley-function-call-leaderboard/** 路径下有变更时触发
+      - 'berkeley-function-call-leaderboard/**'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      # 步骤 1：检出 A1 仓库代码
+      - name: Checkout HolgerZhang/gorilla
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # 检出完整提交历史（用于 filter-repo）
+
+      # 步骤 2：安装 git-filter-repo
+      - name: Install git-filter-repo
+        run: |
+          pip install git-filter-repo
+
+      # 步骤 3：提取 bf 文件夹的历史
+      - name: Extract berkeley-function-call-leaderboard folder history
+        run: |
+          git filter-repo --path berkeley-function-call-leaderboard/ --force
+
+      # 步骤 4：配置 Git 用户名和邮箱（用于推送提交）
+      - name: Configure Git
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+
+      # 步骤 5：推送到组织仓库 B
+      - name: Push to AIOpsPlus Repo BFCL-CN
+        env:
+          # 从 Secrets 中读取访问令牌（需提前配置）
+          PAT: ${{ secrets.ORG_PAT }}
+        run: |
+          git remote add aiopsplus-repo https://github.com/aiopsplus/BFCL-CN.git
+          git push aiopsplus-repo main --force
